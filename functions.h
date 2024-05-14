@@ -15,12 +15,12 @@ typedef enum category {
     ART_NOVEL, // Художня література
     DICTIONARY, // Словник
     TEXTBOOK, // Підручник
-    ERROR
+        ERROR
 } category;
 
  typedef struct artNovelDetails {
     char *genre; // Жанр
-    char *illustrator; // Прізвище художника-ілюстратора
+    char *illustratorLastName; // Прізвище художника-ілюстратора
 } artNovelDetails;
 
 typedef struct textbookDetails {
@@ -31,7 +31,7 @@ typedef struct textbookDetails {
 typedef union bookDetails {
     artNovelDetails art_novel_details;
     int dictionaryWordCount; // Кількість слів у словнику
-    textbookDetails text_textbook_details;
+    textbookDetails textbook_details;
 } bookDetails;
 
 typedef struct book {
