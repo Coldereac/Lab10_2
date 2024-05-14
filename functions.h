@@ -11,6 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*TODO:
+ *Special output of searced
+ *main
+ *debug
+ */
+
 typedef enum category {
     ART_NOVEL, // Художня література
     DICTIONARY, // Словник
