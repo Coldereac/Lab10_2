@@ -67,10 +67,16 @@ void output_union(book);
 
 void output_array(array);
 
+char* lowering(char*);
+
 array find_by_category(array, category);
 
-array find_by_detail(array, category, char*);
+array find_by_detail(array, category, char*, char*);
 
 array find_by_price(array, int max, int min);
+
+array find_by_detail_artNovel(array books, char *detail, char *searchedDetail);
+array find_by_detail_dictionary(array books, char *searchedDetail);
+array find_by_detail_textBook(array books, char *detail, char *searchedDetail);
 
 #endif //FUNCTIONS_H

@@ -4,6 +4,8 @@
 
 #include "functions.h"
 
+#include <ctype.h>
+
 category input_category(int choice) {
     category result;
     switch (choice) {
@@ -88,8 +90,7 @@ array input_array(int size) {
             char choice = getchar();
             if (choice == 'y' || choice == 'Y') {
                 i--;
-            }
-            else {
+            } else {
                 inputing = 0;
             }
         }
@@ -115,13 +116,15 @@ void output_catagory(book _book) {
 void output_union(book _book) {
     switch (_book.category) {
         case ART_NOVEL:
-            printf("Genre: %s\n Last name of the illustator: %s\n", _book.details.art_novel_details.genre, _book.details.art_novel_details.illustratorLastName);
+            printf("Genre: %s\n Last name of the illustator: %s\n", _book.details.art_novel_details.genre,
+                   _book.details.art_novel_details.illustratorLastName);
             break;
         case DICTIONARY:
             printf("Number of words: %d\n", _book.details.dictionaryWordCount);
             break;
         case TEXTBOOK:
-            printf("Subject: %s\n Grade: %d\n", _book.details.textbook_details.subject, _book.details.textbook_details.grade);
+            printf("Subject: %s\n Grade: %d\n", _book.details.textbook_details.subject,
+                   _book.details.textbook_details.grade);
             break;
     }
 }
@@ -139,4 +142,145 @@ void output_array(array books) {
     for (int i = 0; i < books.size; ++i) {
         output_book(books.catalog[i]);
     }
+}
+
+array find_by_category(array books, category searched) {
+    array result;
+    result.size = 0;
+    result.catalog = (book *) malloc(books.size * sizeof(book));
+    for (int i = 0; i < books.size; ++i) {
+        if (books.catalog[i].category == searched) {
+            result.catalog[result.size++] = books.catalog[i];
+        }
+    }
+    result.catalog = (book *) realloc(result.catalog, result.size * sizeof(book));
+    return result;
+}
+
+char *lowering(const char *str) {
+    char *result = Mem(strlen(str)+1);
+    while (*str != '\0') {
+        *result++ = tolower(*str);
+    }
+    return result;
+}
+
+array find_by_detail_artNovel(array books, char *detail, char *searchedDetail) {
+    array result;
+    result.size = 0;
+    result.catalog = (book *) malloc(books.size * sizeof(book));
+    switch (lowering(detail)) {
+        case "genre":
+            for (int i = 0; i < books.size; ++i) {
+                    if (strcasecmp(books.catalog[i].details.art_novel_details.genre, searchedDetail)) {
+                        result.catalog[result.size++] = books.catalog[i];
+                    }
+            }
+            break;
+        case "illustrator":
+            for (int i = 0; i < books.size; ++i) {
+                    if (strcasecmp(books.catalog[i].details.art_novel_details.illustratorLastName, searchedDetail)) {
+                        result.catalog[result.size++] = books.catalog[i];
+                    }
+            }
+    }
+    result.catalog = (book *) realloc(result.catalog, result.size * sizeof(book));
+    return result;
+}
+
+array find_by_detail_dictionary(array books, char *searchedDetail) {
+    array result;
+    result.size = 0;
+    result.catalog = (book *) malloc(books.size * sizeof(book));
+    int searchedWordCount = atoi(searchedDetail);
+    for (int i = 0; i < books.size; ++i) {
+        if (books.catalog[i].details.dictionaryWordCount == searchedWordCount) {
+            result.catalog[result.size++] = books.catalog[i];
+        }
+    }
+    result.catalog = (book *) realloc(result.catalog, result.size * sizeof(book));
+    return result;
+}
+
+array find_by_detail_textBook(array books, char *detail, char *searchedDetail) {
+    array result;
+    result.size = 0;
+    result.catalog = (book *) malloc(books.size * sizeof(book));
+    switch (lowering(detail)) {
+        case "subject":
+            for (int i = 0; i < books.size; ++i) {
+                if (strcasecmp(books.catalog[i].details.textbook_details.subject, searchedDetail)) {
+                    result.catalog[result.size++] = books.catalog[i];
+                }
+            }
+            break;
+        case "grade":
+            int grade = atoi(searchedDetail);
+            for (int i = 0; i < books.size; ++i) {
+                if (books.catalog[i].details.textbook_details.grade == grade) {
+                    result.catalog[result.size++] = books.catalog[i];
+                }
+            }
+            break;
+    }
+    result.catalog = (book *) realloc(result.catalog, result.size * sizeof(book));
+    return result;
+}
+
+
+array find_by_price(array books, int max, int min) {
+    array result;
+    result.size = 0;
+    result.catalog = (book *) malloc(books.size * sizeof(book));
+    for (int i = 0; i < books.size; ++i) {
+        if (books.catalog[i].price <= max && books.catalog[i].price <= min) {
+            result.catalog[result.size++] = books.catalog[i];
+        }
+    }
+    result.catalog = (book *) realloc(result.catalog, result.size * sizeof(book));
+    return result;
+}
+
+void freeBook(book _book) {
+    free(_book.title);
+    free(_book.author.firstName);
+    free(_book.author.lastName);
+    switch (_book.category) {
+        case ART_NOVEL:
+            free(_book.details.art_novel_details.genre);
+            free(_book.details.art_novel_details.illustratorLastName);
+            break;
+        case TEXTBOOK:
+            free(_book.details.textbook_details.subject);
+            break;
+    }
+}
+
+void freeArray(array books) {
+    for (int i = 0; i < books.size; ++i) {
+        freeBook(books.catalog[i]);
+    }
+    free(books.catalog);
+}
+
+array find_by_detail(array books, category searchedCategory, char *detail, char *searchedDetail) {
+    array result;
+    result.size = 0;
+    result.catalog = NULL;
+    array filtered = find_by_category(books, searchedCategory);
+    if (filtered.size != 0) {
+        switch (searchedCategory) {
+            case ART_NOVEL:
+                result = find_by_detail_artNovel(filtered, detail, searchedDetail);
+            break;
+            case TEXTBOOK:
+                result = find_by_detail_textBook(filtered, detail, searchedDetail);
+            break;
+            case DICTIONARY:
+                result = find_by_detail_dictionary(filtered, searchedDetail);
+            break;
+        }
+    }
+    freeArray(filtered);
+    return result;
 }
