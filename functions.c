@@ -79,11 +79,21 @@ array input_array(int size) {
     array result;
     result.catalog = (book *) malloc(size * sizeof(book));
     result.size = size;
-    for (int i = 0; i < result.size; ++i) {
+    int i = 0;
+    int inputing = 1;
+    while (i < result.size && inputing) {
         result.catalog[i] = input_book();
         if (result.catalog[i].category == ERROR) {
-            i--;
+            puts("You want to continue input and try again?[y/n]");
+            char choice = getchar();
+            if (choice == 'y' || choice == 'Y') {
+                i--;
+            }
+            else {
+                inputing = 0;
+            }
         }
+        i++;
     }
     return result;
 }
