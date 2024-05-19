@@ -284,3 +284,15 @@ array find_by_detail(array books, category searchedCategory, char *detail, char 
     freeArray(filtered);
     return result;
 }
+
+void output_finded(book finded) {
+    printf("Title: %s", finded.title);
+    printf("Author: %s", finded.author.lastName);
+    printf("Price: %f", finded.price);
+}
+
+void output_finded_array(array finded) {
+    for (int i = 0; i < finded.size; ++i) {
+        output_finded(finded.catalog[i]);
+    }
+}
