@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /*TODO:
  *main
@@ -20,10 +21,10 @@ typedef enum category {
     ART_NOVEL, // Художня література
     DICTIONARY, // Словник
     TEXTBOOK, // Підручник
-        ERROR
+    ERROR
 } category;
 
- typedef struct artNovelDetails {
+typedef struct artNovelDetails {
     char *genre; // Жанр
     char *illustratorLastName; // Прізвище художника-ілюстратора
 } artNovelDetails;
@@ -45,6 +46,7 @@ typedef struct book {
         char *firstName; // Ім'я автора
         char *lastName; // Прізвище автора
     } author;
+
     float price; // Ціна
     int year; // Рік видання
     category category; // Категорія
@@ -54,11 +56,11 @@ typedef struct book {
 typedef struct array {
     book *catalog;
     int size;
-}array;
+} array;
 
 category input_category(int choice);
 
-void input_union(book*);
+void input_union(book *);
 
 book input_book();
 
@@ -76,17 +78,17 @@ void output_finded(book);
 
 void output_finded_array(array);
 
-char* lowering(char*);
-
 array find_by_category(array, category);
 
-array find_by_detail(array, category, char*, char*);
+array find_by_detail(array, category, int, char *);
 
 array find_by_price(array, int max, int min);
 
-array find_by_detail_artNovel(array books, char *detail, char *searchedDetail);
+array find_by_detail_artNovel(array books, int detail, char *searchedDetail);
+
 array find_by_detail_dictionary(array books, char *searchedDetail);
-array find_by_detail_textBook(array books, char *detail, char *searchedDetail);
+
+array find_by_detail_textbook(array books, int detail, char *searchedDetail);
 
 
 #endif //FUNCTIONS_H
